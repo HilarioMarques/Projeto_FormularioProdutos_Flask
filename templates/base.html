@@ -1,18 +1,22 @@
 <!doctype html>
 <html lang="pt-br">
+
 <head>
   <title>Loja de Informática</title>
 </head>
+
 <body>
+
   {% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-      {% for categoria, mensagem in messages %}
-        <div style="color: {% if categoria == 'success' %}green{% else %}red{% endif %};">
-          {{ mensagem }}
-        </div>
-      {% endfor %}
-    {% endif %}
+  {% if messages %}
+  {% for categoria, mensagem in messages %}
+  <div style="color: {% if categoria == 'success' %}green{% else %}red{% endif %};">
+    {{ mensagem }}
+  </div>
+  {% endfor %}
+  {% endif %}
   {% endwith %}
   {% block conteudo %}{% endblock %}
 </body>
+
 </html>
