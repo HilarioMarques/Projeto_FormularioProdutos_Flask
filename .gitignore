@@ -1,0 +1,20 @@
+# Ambiente virtual
+venv/
+
+# Cache do Python
+__pycache__/
+*.pyc
+
+# Configurações locais e banco de dados
+instance/
+*.db
+
+# Arquivos de ambiente e chaves secretas
+.env
+
+# Arquivos temporários e do sistema
+*.log
+*.sqlite3
+.DS_Store
+
+#É um arquivo de texto simples onde você lista arquivos e pastas que o Git deve ignorar, ele não vai versionar, nem enviar esses itens pro GitHub, não tem necessidade.

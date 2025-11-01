@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+  <h2>Adicionar Produto</h2>
+  <form method="POST">
+    {{ form.csrf_token }}
+    {{ form.nome.label }} {{ form.nome(size=30) }}<br>
+    {{ form.preco.label }} {{ form.preco() }}<br>
+    {{ form.submit() }}
+    {% for field, errors in form.errors.items() %}
+      {% for error in errors %}
+        <p style="color:red">{{ error }}</p>
+      {% endfor %}
+    {% endfor %}
+  </form>
+  <a href="{{ url_for('listar_produtos') }}">Ver lista de produtos</a>
+{% endblock %}

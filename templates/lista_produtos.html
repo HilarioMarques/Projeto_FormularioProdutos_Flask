@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+  <h2>Produtos Cadastrados</h2>
+  <ul>
+    {% for p in produtos %}
+      <li>{{ p.nome }} — R$ {{ '%.2f'|format(p.preco) }}</li>
+    {% endfor %}
+  </ul>
+  <a href="{{ url_for('add_produto') }}">Adicionar produto</a>
+{% endblock %}
