@@ -24,6 +24,8 @@ def add_produto():
         return redirect(url_for('listar_produtos'))
     return render_template('form_produto.html', form=form)
 
+#Adicionar uma função que permita remover produto
+
 @app.route('/produtos')
 def listar_produtos():
     produtos = Produto.query.all()
