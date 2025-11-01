@@ -28,7 +28,7 @@ def listar_produtos():
     produtos = Produto.query.all()
     return render_template('lista_produtos.html', produtos=produtos)
 
-# NOVA ROTA: editar produto
+# NOVA ROTA: editar produtos
 @app.route('/editar_produto/<int:id>', methods=['GET', 'POST'])
 def editar_produto(id):
     produto = Produto.query.get_or_404(id)
