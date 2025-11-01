@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, flash
 from models import db, Produto
 from forms import ProdutoForm
-
+#RYAN HUGOXTOSO
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'sua_chave_secreta'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///loja.db'
