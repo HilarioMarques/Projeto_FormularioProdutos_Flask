@@ -12,6 +12,11 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
+#ROTA PADRÃO 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 #ROTA PARA ADICIONAR E LISTAR CLIENTES
 
 @app.route('/add_cliente', methods=['GET', 'POST'])
