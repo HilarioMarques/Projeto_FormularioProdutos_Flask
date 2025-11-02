@@ -23,12 +23,19 @@ def add_produto():
         return redirect(url_for('listar_produtos'))
     return render_template('form_produto.html', form=form)
 
-#Adicionar uma função que permita remover produto
-
 @app.route('/produtos')
 def listar_produtos():
     produtos = Produto.query.all()
     return render_template('lista_produtos.html', produtos=produtos)
+
+#Nova rota: remover produtos
+@app.route('/remover_produto/<int:id>', methods=['POST'])
+def remover_produto(id):
+    produto = Produto.query.get_or_404(id)
+    db.session.delete(produto)
+    db.session.commit()
+    flash(f'Produto "{produto.nome}" removido com sucesso!', 'success')
+    return redirect(url_for('listar_produtos'))
 
 # NOVA ROTA: editar produtos
 @app.route('/editar_produto/<int:id>', methods=['GET', 'POST'])

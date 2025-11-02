@@ -6,6 +6,10 @@
   <li>
     {{ p.nome }} — R$ {{ '%.2f'|format(p.preco) }}
     | <a href="{{ url_for('editar_produto', id=p.id) }}">Editar</a>
+
+    <form method="post" action="{{ url_for('remover_produto', id=p.id) }}" style="display:inline;"> 
+      <input type="submit" value="Remover" onclick="return confirm('Tem certeza que deseja remover o produto {{ p.nome }}?')">
+    </form>
   </li>
   {% endfor %}
 </ul>
