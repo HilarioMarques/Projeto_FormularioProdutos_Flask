@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, flash, request
-from models import db, Produto
-from forms import ProdutoForm
+from models import db, Produto, Cliente
+from forms import ProdutoForm, ClienteForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'sua_chave_secreta'
@@ -11,6 +11,38 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
+
+#ROTA PARA ADICIONAR E LISTAR CLIENTES
+
+@app.route('/add_cliente', methods=['GET', 'POST'])
+def add_cliente():
+    form = ClienteForm()
+    if form.validate_on_submit():
+        # Verificação para evitar duplicatas (já que email e cpf são únicos no models.py)
+        existing_email = Cliente.query.filter_by(email=form.email.data).first()
+        existing_cpf = Cliente.query.filter_by(cpf=form.cpf.data).first()
+
+        if existing_email:
+            flash('Este email já está cadastrado.', 'danger')
+        elif existing_cpf:
+            flash('Este CPF já está cadastrado.', 'danger')
+        else:
+            cliente = Cliente(
+                nome=form.nome.data,
+                email=form.email.data,
+                cpf=form.cpf.data
+            )
+            db.session.add(cliente)
+            db.session.commit()
+            flash(f'Cliente "{cliente.nome}" cadastrado com sucesso!', 'success')
+            return redirect(url_for('listar_clientes'))
+            
+    return render_template('form_cliente.html', form=form)
+
+@app.route('/clientes')
+def listar_clientes():
+    clientes = Cliente.query.all()
+    return render_template('lista_clientes.html', clientes=clientes)
 
 @app.route('/add_produto', methods=['GET', 'POST'])
 def add_produto():

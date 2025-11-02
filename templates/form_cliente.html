@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+<h2>Adicionar Cliente</h2>
+<form method="POST">
+    {{ form.csrf_token }}
+    <div>
+        {{ form.nome.label }}<br>
+        {{ form.nome(size=30) }}
+    </div>
+    <div>
+        {{ form.email.label }}<br>
+        {{ form.email(size=30) }}
+    </div>
+    <div>
+        {{ form.cpf.label }}<br>
+        {{ form.cpf(size=11) }}
+    </div>
+    <br>
+    <div>
+        {{ form.submit() }}
+    </div>
+    {% for field, errors in form.errors.items() %}
+    {% for error in errors %}
+    <p style="color:red">{{ error }}</p>
+    {% endfor %}
+    {% endfor %}
+</form>
+<br>
+<a href="{{ url_for('listar_clientes') }}">Ver lista de clientes</a>
+{% endblock %}
