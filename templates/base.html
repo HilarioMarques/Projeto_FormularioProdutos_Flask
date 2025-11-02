@@ -7,16 +7,24 @@
 
 <body>
 
+  <nav style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+    <a href="{{ url_for('index') }}"><b>Menu Principal</b></a> |
+    <a href="{{ url_for('listar_produtos') }}">Ver Produtos</a> |
+    <a href="{{ url_for('listar_clientes') }}">Ver Clientes</a>
+  </nav>
   {% with messages = get_flashed_messages(with_categories=True) %}
   {% if messages %}
   {% for categoria, mensagem in messages %}
-  <div style="color: {% if categoria == 'success' %}green{% else %}red{% endif %};">
+  <div
+    style="color: {% if categoria == 'success' %}green{% elif categoria == 'danger' %}red{% else %}black{% endif %};">
     {{ mensagem }}
   </div>
   {% endfor %}
   {% endif %}
   {% endwith %}
+
   {% block conteudo %}{% endblock %}
+
 </body>
 
 </html>
