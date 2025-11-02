@@ -2,21 +2,26 @@
 <html lang="pt-br">
 
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Loja de Informática</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
-  <nav style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+  <nav>
     <a href="{{ url_for('index') }}"><b>Menu Principal</b></a> |
     <a href="{{ url_for('listar_produtos') }}">Ver Produtos</a> |
     <a href="{{ url_for('listar_clientes') }}">Ver Clientes</a>
   </nav>
+
   {% with messages = get_flashed_messages(with_categories=True) %}
   {% if messages %}
   {% for categoria, mensagem in messages %}
-  <div
-    style="color: {% if categoria == 'success' %}green{% elif categoria == 'danger' %}red{% else %}black{% endif %};">
+  <div class="flash {{ categoria }}">
     {{ mensagem }}
   </div>
   {% endfor %}
