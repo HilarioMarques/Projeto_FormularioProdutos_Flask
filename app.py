@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, flash, request
-from models import db, Produto, Cliente
-from forms import ProdutoForm, ClienteForm
+from models import db, Produto, Cliente, Venda
+from forms import ProdutoForm, ClienteForm, LoginForm, ComprarForm
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'sua_chave_secreta'
@@ -8,6 +9,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///loja.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+login_manager.login_message = 'Por favor, faça login para acessar essa página.'
+login_manager.login_message_category = 'info'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Cliente.query.get(int(user_id))
 
 with app.app_context():
     db.create_all()
@@ -17,8 +28,88 @@ with app.app_context():
 def index():
     return render_template('index.html')
 
-#ROTA PARA ADICIONAR E LISTAR CLIENTES
+#AUTENTICAÇÃO DO CLIENTE
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('listar_produtos_cliente'))
+    
+    form = LoginForm()
+    if form.validate_on_submit():
+        cpf = form.cpf.data
+        cliente = Cliente.query.filter_by(cpf=cpf).first()
 
+        #decidi fazer a autenticação por cpf
+        if cliente:
+            login_user(cliente)
+            flash(f'Login realizado com sucesso! Bem-vindo(a), {cliente.nome}.', 'success')
+
+            return redirect(url_for("listar_produtos_cliente"))
+        else:
+            flash("CPF não encontrado. Por favor verifique o número.", "danger")
+    
+    return render_template('login.html', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("Você saiu da sua conta.", "info")
+    return redirect(url_for("index"))
+
+#ROTAS DE CLIENTE/COMPRA
+
+#LISTAR PRODUTOS PARA CLIENTE LOGADO
+@app.route('/comprar')
+@login_required
+def listar_produtos_cliente():
+    produtos = Produto.query.all()
+    forms_compra = {p.id: ComprarForm(produto_id=p.id) for p in produtos}
+    return render_template('lista_produtos_cliente.html', produtos=produtos, forms_compra=forms_compra)
+
+#REALIZAR COMPRA
+@app.route('/comprar_produto/<int:produto_id>', methods=["POST"])
+@login_required
+def comprar_produto(produto_id):
+    produto = Produto.query.get_or_404(produto_id)
+    form = ComprarForm(request.form)
+
+    # O ID do produto vem no campo hidden, mas o Flask-WTF exige que o form.validate_on_submit() seja chamado e que o campo 'produto_id' no form seja preenchido corretamente pelo lado do cliente.
+    # Como produto_id está passando na URL e no form, vamos apenas garantir que o form seja válido.
+    
+    # Vou preencher o campo produto_id manualmente para validação, pois ele não é submetido como um campo 'name' padrão.
+    # Poderia passar o produto_id no HiddenField. Vou considerar que o HiddenField está sendo usado.
+
+    if form.validate_on_submit() and int(form.produto_id.data) == produto_id:
+
+        quantidade = form.quantidade.data
+
+        venda = Venda(
+            cliente_id=current_user.id,
+            produto_id=produto.id,
+            preco_unitario=produto.preco,
+            quantidade=quantidade
+        )
+
+        db.session.add(venda)
+        db.session.commit()
+
+        flash(f"Compra de {quantidade}x {produto.nome} realizada com sucesso! (Total: R$ {produto.preco * quantidade:.2f})", "success")
+        return redirect(url_for('listar_produtos_cliente'))
+    
+    flash("Falha na compra. Verifique a quantidade.", "danger")
+    return redirect(url_for("listar_produtos_cliente"))
+
+
+#VER AS COMPRAS DO CLIENTE LOGADO
+@app.route('/minhas_compras')
+@login_required
+def minhas_compras():
+    compras = Venda.query.filter_by(cliente_id=current_user.id).order_by(Venda.data_venda.desc()).all()
+    return render_template("minhas_compras.html", compras=compras)
+
+
+#ROTA PARA ADICIONAR E LISTAR CLIENTES
 @app.route('/add_cliente', methods=['GET', 'POST'])
 def add_cliente():
     form = ClienteForm()

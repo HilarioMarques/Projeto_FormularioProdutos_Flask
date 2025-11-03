@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+<h2>Vitrine de Produtos</h2>
+
+<p>Olá, <strong>{{ current_user.nome }}</strong>! Escolha os produtos que deseja comprar.</p>
+
+<ul>
+  {% for p in produtos %}
+  <li>
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span style="flex-grow: 1;">
+            <strong>{{ p.nome }}</strong> — R$ {{ '%.2f'|format(p.preco) }}
+        </span>
+        
+        <form method="post" action="{{ url_for('comprar_produto', produto_id=p.id) }}" style="display:flex; align-items: center; margin-left: 20px;">
+            {# Obter o formulário específico para este produto, que foi passado pelo app.py #}
+            {% set form = forms_compra[p.id] %}
+            {{ form.csrf_token }}
+            
+            {{ form.produto_id(value=p.id) }} 
+            
+            <label for="{{ form.quantidade.id }}" style="margin-right: 5px;">Qtd:</label>
+            {# Adiciona a classe form-control do seu CSS #}
+            {{ form.quantidade(class="form-control", style="width: 50px; display: inline-block; margin-right: 10px; padding: 5px; height: 35px;") }}
+            
+            {{ form.submit(class="btn btn-primary", value="Comprar") }}
+            
+            {% for error in form.quantidade.errors %}
+                <p class="error-message" style="position: absolute; margin-top: 50px;">{{ error }}</p>
+            {% endfor %}
+        </form>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+<br>
+<a href="{{ url_for('minhas_compras') }}">Ver Meu Histórico de Compras</a>
+{% endblock %}

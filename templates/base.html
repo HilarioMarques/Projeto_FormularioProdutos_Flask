@@ -14,8 +14,16 @@
 
   <nav>
     <a href="{{ url_for('index') }}"><b>Menu Principal</b></a> |
-    <a href="{{ url_for('listar_produtos') }}">Ver Produtos</a> |
-    <a href="{{ url_for('listar_clientes') }}">Ver Clientes</a>
+    <a href="{{ url_for('listar_produtos') }}">Gerenciar Produtos (Admin)</a> |
+    <a href="{{ url_for('listar_clientes') }}">Gerenciar Clientes (Admin)</a>
+    
+    {% if current_user.is_authenticated %}
+      | <a href="{{ url_for('listar_produtos_cliente') }}">Loja (Olá, {{ current_user.nome.split(' ')[0] }})</a> 
+      | <a href="{{ url_for('logout') }}">Sair</a>
+    {% else %}
+      | <a href="{{ url_for('login') }}">Fazer Login</a>
+    {% endif %}
+
   </nav>
 
   {% with messages = get_flashed_messages(with_categories=True) %}

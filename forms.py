@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, DecimalField, SubmitField
+from wtforms import StringField, DecimalField, SubmitField, HiddenField, IntegerField
 # 👇 CERTIFIQUE-SE DE ADICIONAR 'Email' e 'Length' AQUI
 from wtforms.validators import DataRequired, NumberRange, Email, Length 
 
@@ -18,3 +18,16 @@ class ClienteForm(FlaskForm):
         Length(min=11, max=11, message='O CPF deve conter 11 dígitos.')
     ])
     submit = SubmitField('Cadastrar Cliente')
+
+class LoginForm(FlaskForm):
+    cpf = StringField('CPF (apenas números)', validators=[
+        DataRequired(), 
+        Length(min=11, max=11, message='O CPF deve conter 11 dígitos.')
+    ])
+    submit = SubmitField('Entrar')
+
+class ComprarForm(FlaskForm):
+    produto_id = HiddenField(validators=[DataRequired()])
+    quantidade = IntegerField('Quantidade', default=1, validators=[DataRequired(), NumberRange(min=1, message="A quantidade mínima é 1")
+    ])
+    submit = SubmitField("Comprar")
