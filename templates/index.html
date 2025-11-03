@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+<h2>Menu Principal</h2>
+
+{% if current_user.is_authenticated %}
+<h3>Área do Cliente</h3>
+<ul>
+    <li>
+        <a href="{{ url_for('listar_produtos_cliente') }}">Ver Produtos e Comprar</a>
+    </li>
+    <li>
+        <a href="{{ url_for('minhas_compras') }}">Ver Meu Histórico de Compras</a>
+    </li>
+</ul>
+{% else %}
+<h3>Acesso à Loja</h3>
+<ul>
+    <li>
+        <a href="{{ url_for('login') }}">Fazer Login (Acesso do Cliente)</a>
+    </li>
+</ul>
+{% endif %}
+
+
+<h3>Gerenciar Produtos (Admin)</h3>
+<ul>
+    <li>
+        <a href="{{ url_for('listar_produtos') }}">Ver Produtos Cadastrados</a>
+    </li>
+    <li>
+        <a href="{{ url_for('add_produto') }}">Adicionar Novo Produto</a>
+    </li>
+</ul>
+
+<h3>Gerenciar Clientes (Admin)</h3>
+<ul>
+    <li>
+        <a href="{{ url_for('listar_clientes') }}">Ver Clientes Cadastrados</a>
+    </li>
+    <li>
+        <a href="{{ url_for('add_cliente') }}">Adicionar Novo Cliente</a>
+    </li>
+</ul>
+{% endblock %}

@@ -1,18 +1,43 @@
 <!doctype html>
 <html lang="pt-br">
+
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Loja de Informática</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
-  {% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-      {% for categoria, mensagem in messages %}
-        <div style="color: {% if categoria == 'success' %}green{% else %}red{% endif %};">
-          {{ mensagem }}
-        </div>
-      {% endfor %}
+
+  <nav>
+    <a href="{{ url_for('index') }}"><b>Menu Principal</b></a> |
+    <a href="{{ url_for('listar_produtos') }}">Gerenciar Produtos (Admin)</a> |
+    <a href="{{ url_for('listar_clientes') }}">Gerenciar Clientes (Admin)</a>
+    
+    {% if current_user.is_authenticated %}
+      | <a href="{{ url_for('listar_produtos_cliente') }}">Loja (Olá, {{ current_user.nome.split(' ')[0] }})</a> 
+      | <a href="{{ url_for('logout') }}">Sair</a>
+    {% else %}
+      | <a href="{{ url_for('login') }}">Fazer Login</a>
     {% endif %}
+
+  </nav>
+
+  {% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+  {% for categoria, mensagem in messages %}
+  <div class="flash {{ categoria }}">
+    {{ mensagem }}
+  </div>
+  {% endfor %}
+  {% endif %}
   {% endwith %}
+
   {% block conteudo %}{% endblock %}
+
 </body>
+
 </html>

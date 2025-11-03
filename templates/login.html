@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+<h2>Login do cliente</h2>
+<p>Entre na sua conta usando apenas seu CPF</p>
+
+<form method="POST">
+    {{ form.csrf_token }}
+    <div>
+        {{ form.cpf.label }}<br>
+        {{ form.cpf(class="form-control", size=11, placeholder="Apenas números") }}
+        {% for error in form.cpf.errors %}
+            <p class="error-message">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <br>
+    <div>
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+{% endblock %}

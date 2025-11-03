@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+<h2>Meu Histórico de Compras</h2>
+
+<p>Cliente: <strong>{{ current_user.nome }}</strong></p>
+
+{% if compras %}
+<ul>
+  {% for compra in compras %}
+  <li style="display: block; padding: 10px 15px;">
+    <strong>Produto:</strong> {{ compra.produto.nome }} <br>
+    <strong>Detalhes:</strong> {{ compra.quantidade }}x | R$ {{ '%.2f'|format(compra.preco_unitario) }} (Unitário) <br>
+    <strong>Total:</strong> R$ {{ '%.2f'|format(compra.preco_unitario * compra.quantidade) }} <br>
+    <small>Data: {{ compra.data_venda.strftime('%d/%m/%Y %H:%M:%S') }}</small>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+    <p>Você ainda não realizou nenhuma compra.</p>
+{% endif %}
+
+<br>
+<a href="{{ url_for('listar_produtos_cliente') }}" class="btn btn-primary">Voltar para a Loja</a>
+{% endblock %}
