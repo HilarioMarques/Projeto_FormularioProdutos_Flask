@@ -28,6 +28,13 @@ class LoginForm(FlaskForm):
 
 class ComprarForm(FlaskForm):
     produto_id = HiddenField(validators=[DataRequired()])
-    quantidade = IntegerField('Quantidade', default=1, validators=[DataRequired(), NumberRange(min=1, message="A quantidade mínima é 1")
+    quantidade = IntegerField('Quantidade', default=1, validators=[DataRequired()
     ])
-    submit = SubmitField("Comprar")
+    submit = SubmitField("Adiconar ao Carrinho")
+
+class CarrinhoForm(FlaskForm):
+    item_id = HiddenField(validators=[DataRequired()])
+    quantidade = IntegerField("Quantidade", default=1, validators=[DataRequired()])
+
+    submit_atualizar = SubmitField("Atualizar")
+    submit_remover =SubmitField("Remover")
